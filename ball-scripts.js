@@ -43,7 +43,9 @@ window.onload = function () {
 			ball.vy += g;	
 
 			//Mouse Collision Check
-if (Math.sqrt(Math.pow((ball.x - mouseX),2) + Math.pow((ball.y - mouseY),2)) < ball.r) {
+var colMouseX = Math.pow((ball.x - mouseX),2);
+var colMouseY = Math.pow((ball.y - mouseY),2);
+if (Math.sqrt(colMouseX + colMouseY) < ball.r) {
 ball.vy *= -1;
 }
 
