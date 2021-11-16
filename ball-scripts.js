@@ -1,58 +1,63 @@
-window.onload = function () {
-	// Definitions
-	var canvas = document.getElementById("key-events-canvas");
-	var context = canvas.getContext("2d");
+window.onload = function() {
 
-	///ball - free fall
-	var ball = new Ball(30, "green");
-	ball.x = canvas.width / 2;
-	ball.y = 50;
-	ball.context = context;
+    // Definitions
+    var canvas = document.querySelector("canvas");
+    var context = canvas.getContext("2d");
 
-	var mouseX = 0;
-	var mouseY = 0;
+    var boundings = canvas.getBoundingClientRect();
+    var g = 0.098;
+    var mouseX = 0,
+        mouseY = 0;
 
-	//Mouse Listener
-	canvas.addEventListener('mousemove', function (event) {
-		var boundings = canvas.getBoundingClientRect();
-		mouseX = event.clientX - boundings.left;
-		mouseY = event.clientY - boundings.top;
-	})
+    //BALL
+    var ball = new Ball(25, 'purple');
+    ball.x = 400;
+    ball.y = 80;
+    ball.context = context;
 
-	animate();
+    //Listener
+    canvas.addEventListener('mousemove', (event) => {
 
-	//acceleration
-	var ax = 0.05;
-	//gravity
-	var g = 0.098;
-	//velocity
+        mouseX = event.clientX - boundings.left;
+        mouseY = event.clientY - boundings.top;
+    })
 
-	ball.vy = 0; //free fall
 
-	function animate() {
 
-		reqAnimFrame = window.requestAnimationFrame;
-		reqAnimFrame(animate);
+    window.requestAnimationFrame(animationLoop);
 
-		// Clear Canvas
-		context.clearRect(0, 0, canvas.width, canvas.height);
 
-		// Update
-		//free fall
-		ball.y += ball.vy;
-		ball.vy += g;
 
-		//Mouse Collision Check
-		var colMouseX = Math.pow((ball.x - mouseX), 2);
-		var colMouseY = Math.pow((ball.y - mouseY), 2);
-		if (Math.sqrt(colMouseX + colMouseY) < ball.r) {
-			ball.vy *= -1;
-		}
+    function animationLoop() {
 
-		// Draw
-		ball.draw();
-	}
+        // Clear Canvas
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
+        // Update
+        // Y
+        ball.vy = ball.vy + g; //ivme
+        ball.y = ball.y + ball.vy;
+
+        // Mouse Collision
+        if (Math.sqrt(Math.pow((ball.x - mouseX), 2) + 2 + Math.pow((ball.y - mouseY), 2)) < ball.r) {
+            ball.vy *= -1;
+        }
+
+        // Draw
+        ball.draw()
+
+        // Animate
+        window.requestAnimationFrame(animationLoop);
+    }
+
+
+    window.requestAnimationFrame = (function() {
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+    })();
 };
-
-
